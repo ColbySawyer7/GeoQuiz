@@ -30,6 +30,9 @@ class MainActivity : AppCompatActivity() {
     private val answeredBank = MutableList(questionBank.size, { false })
 
     private var currentIndex = 0
+    private var numAnswered = 0
+    private var ansCorrect = 0
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -102,6 +105,7 @@ class MainActivity : AppCompatActivity() {
     private fun checkAnswer(userAnswer: Boolean){
         val correctAnswer = questionBank[currentIndex].answer
         val messageResId = if(userAnswer == correctAnswer){
+            ++ansCorrect
             R.string.correct_toast
         }
         else{
@@ -110,5 +114,13 @@ class MainActivity : AppCompatActivity() {
         Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show()
 
         answeredBank[currentIndex] = true
+        ++numAnswered
+
+        if(numAnswered == questionBank.size){
+            var percentCorrect = ansCorrect * 100.0 / questionBank.size
+            Toast.makeText(this, "You scored ${ansCorrect} our " +
+                    "of ${questionBank.size} for a score of ${percentCorrect}%",
+                Toast.LENGTH_SHORT).show()
+        }
     }
 }
