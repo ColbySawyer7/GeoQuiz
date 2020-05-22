@@ -21,4 +21,9 @@
     //Toasts
     <string name="correct_toast">Correct!</string>
     <string name="incorrect_toast">Incorrect!</string>
+
+    //Extras
+    <string name="move_left">Move Left</string>
+    <string name="move_right">Move Right</string>
+
 </resources>
