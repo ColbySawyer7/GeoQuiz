@@ -24,4 +24,7 @@
     <string name="show_answer_button">Show Answer</string>
     <string name="cheat_button">Cheat!</string>
     <string name="judgment_toast">Cheating is wrong.</string>
+
+    <string name="cheats_remaining">%1$d cheats remaining</string>
+    <string name="no_cheats_remaining">All cheats already used</string>
 </resources>

@@ -16,6 +16,8 @@ import androidx.lifecycle.ViewModelProviders
 
 private const val TAG = "MainActivity"
 private const val KEY_INDEX = "index"
+private const val KEY_IS_CHEATER = "isCheater"
+private const val KEY_CHEATS_REMAINING = "cheatsRemaining"
 private const val REQUEST_CODE_CHEAT = 0
 
 class MainActivity : AppCompatActivity() {
@@ -38,6 +40,12 @@ class MainActivity : AppCompatActivity() {
 
         val currentIndex = savedInstanceState?.getInt(KEY_INDEX, 0) ?: 0
         quizViewModel.currentIndex = currentIndex
+
+        val isCheater = savedInstanceState?.getBoolean(KEY_IS_CHEATER, false) ?: false
+        quizViewModel.isCheater = isCheater
+
+        val cheatsRemaining = savedInstanceState?.getInt(KEY_CHEATS_REMAINING, 3) ?: 3
+        quizViewModel.cheatsRemaining = cheatsRemaining
 
         trueButton = findViewById(R.id.true_button)
         falseButton = findViewById(R.id.false_button)
@@ -66,7 +74,9 @@ class MainActivity : AppCompatActivity() {
         cheatButton.setOnClickListener {view ->
             // Start CheatActivity
             val answerIsTrue = quizViewModel.currentQuestionAnswer
-            val intent = CheatActivity.newIntent(this@MainActivity, answerIsTrue)
+            val cheatsRemaining = quizViewModel.cheatsRemaining
+            val intent = CheatActivity.newIntent(this@MainActivity, answerIsTrue, cheatsRemaining)
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 val options = ActivityOptions
                     .makeClipRevealAnimation(view, 0, 0, view.width, view.height)
@@ -98,6 +108,8 @@ class MainActivity : AppCompatActivity() {
         super.onSaveInstanceState(savedInstanceState)
         Log.i(TAG, "onSaveInstanceState")
         savedInstanceState.putInt(KEY_INDEX,  quizViewModel.currentIndex)
+        savedInstanceState.putBoolean(KEY_IS_CHEATER, quizViewModel.isCheater)
+        savedInstanceState.putInt(KEY_CHEATS_REMAINING, quizViewModel.cheatsRemaining)
     }
     override fun onStop() {
         super.onStop()
@@ -133,8 +145,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         if (requestCode == REQUEST_CODE_CHEAT) {
-            quizViewModel.isCheater =
-                data?.getBooleanExtra(EXTRA_ANSWER_SHOWN, false) ?: false
+            val justCheated = data?.getBooleanExtra(EXTRA_ANSWER_SHOWN, false) ?: false
+            if(justCheated){
+                quizViewModel.cheatsRemaining -= 1
+            }
+            quizViewModel.isCheater = justCheated
         }
     }
 }
